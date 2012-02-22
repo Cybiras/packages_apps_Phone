@@ -553,6 +553,7 @@ public class PhoneApp extends Application implements AccelerometerListener.Orien
             intentFilter.addAction(Intent.ACTION_SCREEN_OFF);
             intentFilter.addAction(Intent.ACTION_SCREEN_ON);
             intentFilter.addAction(ACTION_VIBRATE_45);
+
             if (mTtyEnabled) {
                 intentFilter.addAction(TtyIntent.TTY_PREFERRED_MODE_CHANGE_ACTION);
             }
