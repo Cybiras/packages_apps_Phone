@@ -167,6 +167,8 @@ public class CallFeaturesSetting extends PreferenceActivity
             "sip_call_options_wifi_only_key";
     private static final String SIP_SETTINGS_CATEGORY_KEY =
             "sip_settings_category_key";
+    private static final String LOCKSCREEN_IF_CALL_ENDS_WITH_SCREENOFF =
+            "lockscreen_if_call_ends_with_screenoff";
 
     private Intent mContactListIntent;
 
@@ -231,6 +233,7 @@ public class CallFeaturesSetting extends PreferenceActivity
     private PreferenceScreen mVoicemailSettings;
     private ListPreference mVoicemailNotificationVibrateWhen;
     private SipSharedPreferences mSipSharedPreferences;
+    private CheckBoxPreference mCallEndedWithScreenOffLocks;
 
     private class VoiceMailProvider {
         public VoiceMailProvider(String name, Intent intent) {
@@ -481,7 +484,7 @@ public class CallFeaturesSetting extends PreferenceActivity
      * display value.
      */
     public boolean onPreferenceChange(Preference preference, Object objValue) {
-        if (preference == mButtonDTMF) {
+        if (preference == mButtonDTMF) {       
             int index = mButtonDTMF.findIndexOfValue((String) objValue);
             Settings.System.putInt(mPhone.getContext().getContentResolver(),
                     Settings.System.DTMF_TONE_TYPE_WHEN_DIALING, index);
@@ -491,6 +494,10 @@ public class CallFeaturesSetting extends PreferenceActivity
             int mwi_notification = mMwiNotification.isChecked() ? 1 : 0;
             Settings.System.putInt(mPhone.getContext().getContentResolver(),
                     Settings.System.ENABLE_MWI_NOTIFICATION, mwi_notification);
+        } else if (preference == mCallEndedWithScreenOffLocks) {
+            boolean doLock = (Boolean) objValue;
+            Settings.System.putInt(mPhone.getContext().getContentResolver(),
+                    Settings.System.LOCKSCREEN_IF_CALL_ENDS_WITH_SCREENOFF, doLock ? 1 : 0);
         } else if (preference == mVoicemailProviders) {
             final String currentProviderKey = getCurrentVoicemailProviderKey();
             final String newProviderKey = (String)objValue;
@@ -1410,6 +1417,7 @@ public class CallFeaturesSetting extends PreferenceActivity
             mSubMenuVoicemailSettings.setDialogTitle(R.string.voicemail_settings_number_label);
         }
 
+        mCallEndedWithScreenOffLocks = (CheckBoxPreference) findPreference(LOCKSCREEN_IF_CALL_ENDS_WITH_SCREENOFF);
         mMwiNotification = (CheckBoxPreference) findPreference(BUTTON_MWI_NOTIFICATION_KEY);
         if (mMwiNotification != null) {
             if (getResources().getBoolean(R.bool.sprint_mwi_quirk)) {
@@ -1437,6 +1445,11 @@ public class CallFeaturesSetting extends PreferenceActivity
             initVoiceMailProviders();
         }
 
+        if (mCallEndedWithScreenOffLocks != null) {
+            mCallEndedWithScreenOffLocks.setChecked(Settings.System.getInt(getContentResolver(),
+                    Settings.System.LOCKSCREEN_IF_CALL_ENDS_WITH_SCREENOFF, 1) == 1);
+            mCallEndedWithScreenOffLocks.setOnPreferenceChangeListener(this);
+        }
 
         if (mButtonDTMF != null) {
             if (getResources().getBoolean(R.bool.dtmf_type_enabled)) {
@@ -1585,6 +1598,11 @@ public class CallFeaturesSetting extends PreferenceActivity
                 if (pref != sipSettings) pref.setEnabled(false);
             }
             return;
+        }
+
+        if (mCallEndedWithScreenOffLocks != null) {
+            mCallEndedWithScreenOffLocks.setChecked(Settings.System.getInt(getContentResolver(),
+                    Settings.System.LOCKSCREEN_IF_CALL_ENDS_WITH_SCREENOFF, 1) == 1);
         }
 
         if (mMwiNotification != null) {
