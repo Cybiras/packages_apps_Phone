@@ -45,12 +45,12 @@
               bottom area of this widget is just wasted space.
     -->
     <com.android.internal.widget.multiwaveview.MultiWaveView
-        android:id="@+id/incomingCallWidget"
+       android:id="@+id/incomingCallWidget"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_marginBottom="-46dp"
-        android:background="@android:color/black"
+        android:background="@android:color/transparent"
         android:visibility="gone"
 
         prvandroid:targetDrawables="@array/incoming_call_widget_3way_targets"
@@ -66,7 +66,7 @@
         prvandroid:rightChevronDrawable="@*android:drawable/ic_lockscreen_chevron_right"
         prvandroid:feedbackCount="3"
         prvandroid:horizontalOffset="0dip"
-        prvandroid:verticalOffset="20dip"
+        prvandroid:verticalOffset="30dip"
         />
 
     <!--
